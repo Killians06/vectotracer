@@ -1,6 +1,9 @@
 import React from 'react';
 
 export default function VectorDrawer({ width, height, depth, svgRef }) {
+  // Rayon des trous (3mm de diamètre)
+  const holeRadius = 1.5;
+
   // Pli gauche (vertical)
   const pliGauchePoints = [
     [0, depth + depth],
@@ -9,7 +12,7 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
     [0, depth + height - depth],
   ]
     .map((p) => p.join(','))
-    .join(' ');
+    .join(',');
 
   // Pli droit (vertical)
   const pliDroitPoints = [
@@ -21,7 +24,7 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
     [depth + width, depth + height],
   ]
     .map((p) => p.join(','))
-    .join(' ');
+    .join(',');
 
   // Pli haut (horizontal)
   const pliHautPoints = [
@@ -33,7 +36,7 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
     [depth, depth],
   ]
     .map((p) => p.join(','))
-    .join(' ');
+    .join(',');
 
   // Pli bas (horizontal)
   const pliBasPoints = [
@@ -45,7 +48,26 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
     [0, depth + height + depth],
   ]
     .map((p) => p.join(','))
-    .join(' ');
+    .join(',');
+
+  // Positions des trous
+  const holes = [
+    // Pli haut - coins extérieurs
+    { cx: depth*0.5, cy: 10 },
+    { cx: depth + width + depth*0.5, cy: 10 },
+
+    // Pli bas - coins extérieurs
+    { cx: depth*0.5, cy: depth * 2 + height -10},
+    { cx: depth + width + depth*0.5, cy: depth * 2 + height -10 },
+
+    // Pli gauche - trous alignés en haut et bas
+    { cx: 10, cy: depth*2 + 10},
+    { cx: 10, cy: height - 10 },
+
+    // Pli droit - trous alignés en haut et bas
+    { cx: depth * 2 + width - 10, cy: depth*2 + 10 },
+    { cx: depth * 2 + width - 10, cy: height - 10 },
+  ];
 
   // Calcul taille SVG totale (avec marges pour plis)
   const svgWidth = width + 2 * depth + 40;
@@ -56,7 +78,7 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
       ref={svgRef}
       width="100%"
       height="400"
-      viewBox={`-20 -20 ${width + 2 * depth + 40} ${height + 2 * depth + 40}`}
+      viewBox={`-20 -20 ${svgWidth} ${svgHeight}`}
       xmlns="http://www.w3.org/2000/svg"
       style={{ backgroundColor: '#f0f0f0' }}
     >
@@ -98,7 +120,7 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
         y={depth}
         width={width}
         height={height}
-        fill="#cce5ff" // couleur douce de fond
+        fill="#cce5ff"
       />
 
       {/* Face centrale décomposée en 4 lignes */}
@@ -134,6 +156,19 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
         stroke="black"
         strokeWidth={1}
       />
+
+      {/* Perçages */}
+      {holes.map(({ cx, cy }, i) => (
+        <circle
+          key={i}
+          cx={cx}
+          cy={cy}
+          r={holeRadius}
+          fill="none"
+          stroke="red"
+          strokeWidth={1}
+        />
+      ))}
     </svg>
   );
 }
