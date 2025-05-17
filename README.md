@@ -20,8 +20,8 @@ Une application React pour la prévisualisation 3D interactive d’un caisson Di
 
 1. Cloner le dépôt :
    ```bash
-   git clone https://github.com/ton-utilisateur/dibond-caisson-3d.git
-   cd dibond-caisson-3d
+   git clone https://github.com/Killians06/vectotracer.git
+   cd vectotracer
    ```
 
 2. Installer les dépendances :
@@ -36,7 +36,7 @@ Une application React pour la prévisualisation 3D interactive d’un caisson Di
 
 4. Ouvrir l'application dans votre navigateur à l'adresse suivante :
    ```
-   http://localhost:3000
+   http://localhost:5173/
    ```
 
 ---
@@ -78,5 +78,5 @@ Ce projet est sous licence [MIT](LICENSE).
 
 ## Auteur
 
-Développé par **[Votre Nom ou Pseudo]**. N'hésitez pas à me contacter pour toute question ou suggestion !
+Développé par Killians Streibel. N'hésitez pas à me contacter pour toute question ou suggestion !
 
