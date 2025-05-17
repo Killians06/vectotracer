@@ -1,9 +1,8 @@
-
 import { jsPDF } from 'jspdf';
 import { svg2pdf } from 'svg2pdf.js';
 
 /**
- * Exporte le SVG affiché à l'écran.
+ * Exporte le SVG affiché à l'écran au format fichier SVG.
  * @param {SVGElement} svgElement - L'élément SVG à exporter.
  */
 export function exportSVG(svgElement) {
@@ -86,35 +85,81 @@ EOF`;
   URL.revokeObjectURL(url);
 }
 
-export function exportPDF(svgElement) {
-    const viewBoxAttr = svgElement.getAttribute('viewBox');
-    if (!viewBoxAttr) {
-      console.error("SVG doit avoir un attribut viewBox défini");
-      return;
-    }
-  
-    const [minX, minY, vbWidth, vbHeight] = viewBoxAttr.split(' ').map(Number);
-  
-    // Crée le PDF à la taille exacte (en mm) de la zone viewBox
-    const pdf = new jsPDF({
-      unit: 'mm',
-      format: [vbWidth, vbHeight],
-    });
-  
-    // On décale pour que la zone viewBox commence à 0,0 dans le PDF
-    const xOffset = -minX;
-    const yOffset = -minY;
-  
-    // Échelle 1 = 1 unité SVG = 1 mm dans le PDF
-    const scale = 1;
-  
-    svg2pdf(svgElement, pdf, {
-      xOffset,
-      yOffset,
-      scale,
-    }).then(() => {
-      pdf.save('tracé.pdf');
-    }).catch(err => {
-      console.error('Erreur export PDF:', err);
-    });
+/**
+ * Exporte un SVG vers PDF côté client, à l’échelle 1:1.
+ * @param {SVGElement} svgElement - L'élément SVG à exporter.
+ */
+export function generatePDF(svgElement) {
+  const viewBoxAttr = svgElement.getAttribute('viewBox');
+  if (!viewBoxAttr) {
+    console.error("SVG doit avoir un attribut viewBox défini");
+    return;
   }
+
+  const [minX, minY, vbWidth, vbHeight] = viewBoxAttr.split(' ').map(Number);
+
+  // Crée le PDF avec la taille du viewBox en mm
+  const pdf = new jsPDF({
+    unit: 'mm',
+    format: [vbWidth, vbHeight],
+    orientation: vbWidth > vbHeight ? 'landscape' : 'portrait',
+  });
+
+  const xOffset = -minX;
+  const yOffset = -minY;
+  const scale = 1; // 1 unité SVG = 1 mm
+
+  svg2pdf(svgElement, pdf, {
+    xOffset,
+    yOffset,
+    scale,
+    removeInvalid: true,
+  }).then(() => {
+    pdf.save('tracé.pdf');
+  }).catch(err => {
+    console.error('Erreur export PDF:', err);
+  });
+}
+
+/**
+ * Fonction qui appelle le serveur Node.js pour générer le PDF avec spot colors.
+ * @param {number} width - Largeur totale en mm.
+ * @param {number} height - Hauteur totale en mm.
+ * @param {Array<{d: string, spotcolor?: boolean}>} paths - Liste des chemins SVG avec indication spotcolor.
+ */
+export async function exportViaBackend(totalWidth, totalHeight, elements, filename) {
+    try {
+      const response = await fetch('http://localhost:3000/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          width: totalWidth,
+          height: totalHeight,
+          elements: elements,
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erreur serveur : ${errorText}`);
+      }
+  
+      const blob = await response.blob();
+      // Par exemple, déclencher un téléchargement
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename + '.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      return true;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  

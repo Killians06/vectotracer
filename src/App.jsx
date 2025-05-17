@@ -6,6 +6,7 @@ import Previsualisation3D from './components/Previsualisation3D';
 
 function App() {
   const [dims, setDims] = useState({ width: 400, height: 300, depth: 40 });
+  const [paths, setPaths] = useState([]); // <-- nouvel état pour les paths
   const svgRef = useRef(null);
 
   const updateDims = (key, value) => {
@@ -20,10 +21,10 @@ function App() {
         <Formulaire dims={dims} onChange={updateDims} />
 
         <div className="border mt-4 p-4 bg-white rounded shadow">
-          <VectorDrawer {...dims} svgRef={svgRef} />
+          <VectorDrawer {...dims} svgRef={svgRef} onPathsReady={setPaths} />
         </div>
 
-        <ExportButtons svgRef={svgRef} dims={dims} />
+        <ExportButtons svgRef={svgRef} dims={dims} paths={paths} />
       </div>
 
       <div className="border p-4 bg-white rounded shadow">

@@ -8,21 +8,28 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
   const externalPath = [
     // Pli haut
     `M 0,0`,
-    `L ${depth+width+depth},0`,
-    `L ${depth+width},${depth}`,
-    `L ${depth+width+depth},${depth*2}`,
-    `L ${depth+width+depth},${height}`,
-    `L ${depth+width},${height+depth}`,
-    `L ${depth*2+width},${depth*2+height}`,
-    `L 0,${depth*2+height}`,
-    `L ${depth},${depth+height}`,
+    `L ${depth + width + depth},0`,
+    `L ${depth + width},${depth}`,
+    `L ${depth + width + depth},${depth * 2}`,
+    `L ${depth + width + depth},${height}`,
+    `L ${depth + width},${height + depth}`,
+    `L ${depth * 2 + width},${depth * 2 + height}`,
+    `L 0,${depth * 2 + height}`,
+    `L ${depth},${depth + height}`,
     `L 0,${height}`,
-    `L 0,${depth*2}`,
+    `L 0,${depth * 2}`,
     `L ${depth},${depth}`,
     `L 0,0`,
     // Retour au point de départ
     `Z`,
   ].join(' ');
+
+  const paths = [
+    {
+      d: externalPath,
+      spotcolor: true, // ou false selon le besoin
+    },
+  ];
 
   // Positions des trous
   const holes = [
@@ -44,78 +51,93 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
   ];
 
   // Calcul taille SVG totale (avec marges pour plis)
-  const svgWidth = width + 2 * depth + 40;
-  const svgHeight = height + 2 * depth + 40;
-  
-  const mmToPx = mm => mm * (96 / 25.4);
+  const svgWidth = width + 2 * depth;
+  const svgHeight = height + 2 * depth;
+  const spotcolor = true; // ou false
 
   return (
     <svg
-  ref={svgRef}
-  width={`300px`}
-  height={`200px`}
-  viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-  xmlns="http://www.w3.org/2000/svg"
-  style={{ backgroundColor: '#f0f0f0' }}
->
+      ref={svgRef}
+      width={svgWidth}
+      height={svgHeight}
+      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ backgroundColor: '#f0f0f0' }}
+    >
       {/* Tracé externe unique */}
-      <path d={externalPath} fill="#90caf9" stroke="black" strokeWidth={1} />
-
-      {/* Fond face centrale */}
-      <rect
-        x={depth}
-        y={depth}
-        width={width}
-        height={height}
-        fill="#cce5ff"
-      />
-
-      {/* Face centrale décomposée en 4 lignes */}
-      <line
-        x1={depth}
-        y1={depth}
-        x2={depth + width}
-        y2={depth}
-        stroke="black"
-        strokeWidth={1}
-      />
-      <line
-        x1={depth}
-        y1={depth + height}
-        x2={depth + width}
-        y2={depth + height}
-        stroke="black"
-        strokeWidth={1}
-      />
-      <line
-        x1={depth}
-        y1={depth * 0}
-        x2={depth}
-        y2={depth * 2 + height}
-        stroke="black"
-        strokeWidth={1}
-      />
-      <line
-        x1={depth + width}
-        y1={depth * 0}
-        x2={depth + width}
-        y2={depth * 2 + height}
-        stroke="black"
-        strokeWidth={1}
-      />
-
-      {/* Perçages */}
-      {holes.map(({ cx, cy }, i) => (
-        <circle
-          key={i}
-          cx={cx}
-          cy={cy}
-          r={holeRadius}
-          fill="none"
-          stroke="red"
-          strokeWidth={1}
+      {paths.map((path, index) => (
+        <path
+          key={index}
+          d={path.d}
+          fill="#90caf9"
+          stroke={path.spotcolor ? 'red' : 'black'} // Juste pour affichage à l'écran
+          data-spotcolor={path.spotcolor ? 'true' : 'false'} // <-- Ici l'attribut data-spotcolor
         />
       ))}
-    </svg>
+
+      {/* Fond face centrale */}
+    <rect
+      x={depth}
+      y={depth}
+      width={width}
+      height={height}
+      fill="#cce5ff"
+      stroke={spotcolor ? 'red' : 'black'}
+      strokeWidth={1}
+      data-spotcolor={spotcolor ? 'true' : 'false'}
+    />
+
+    {/* Face centrale décomposée en 4 lignes */}
+    <line
+      x1={depth}
+      y1={depth}
+      x2={depth + width}
+      y2={depth}
+      stroke={spotcolor ? 'red' : 'black'}
+      strokeWidth={1}
+      data-spotcolor={spotcolor ? 'true' : 'false'}
+    />
+    <line
+      x1={depth}
+      y1={depth + height}
+      x2={depth + width}
+      y2={depth + height}
+      stroke={spotcolor ? 'red' : 'black'}
+      strokeWidth={1}
+      data-spotcolor={spotcolor ? 'true' : 'false'}
+    />
+    <line
+      x1={depth}
+      y1={depth * 0}
+      x2={depth}
+      y2={depth * 2 + height}
+      stroke={spotcolor ? 'red' : 'black'}
+      strokeWidth={1}
+      data-spotcolor={spotcolor ? 'true' : 'false'}
+    />
+    <line
+      x1={depth + width}
+      y1={depth * 0}
+      x2={depth + width}
+      y2={depth * 2 + height}
+      stroke={spotcolor ? 'red' : 'black'}
+      strokeWidth={1}
+      data-spotcolor={spotcolor ? 'true' : 'false'}
+    />
+
+    {/* Perçages */}
+    {holes.map(({ cx, cy }, i) => (
+      <circle
+        key={i}
+        cx={cx}
+        cy={cy}
+        r={holeRadius}
+        fill="none"
+        stroke={spotcolor ? 'red' : 'black'}
+        strokeWidth={1}
+        data-spotcolor={spotcolor ? 'true' : 'false'}
+      />
+    ))}
+  </svg>
   );
 }

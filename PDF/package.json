@@ -1,0 +1,20 @@
+{
+  "name": "vectotracer-pdf",
+  "version": "1.0.0",
+  "description": "",
+  "main": "PDFServer.js",
+  "scripts": {
+    "start": "node PDFServer.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "pdfkit": "github:sajjad-shirazy/pdfkit.js",
+    "svg-to-pdfkit": "github:sajjad-shirazy/SVG-to-PDFKit#0.1.8"
+  }
+}
