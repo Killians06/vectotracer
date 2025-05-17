@@ -31,7 +31,7 @@ Une application React pour la prévisualisation 3D interactive d’un caisson Di
 
 3. Lancer l'application en mode développement :
    ```bash
-   npm start
+   npm run dev
    ```
 
 4. Ouvrir l'application dans votre navigateur à l'adresse suivante :
