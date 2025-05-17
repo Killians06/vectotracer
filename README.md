@@ -1,12 +1,82 @@
-# React + Vite
+# Dibond Caisson 3D Preview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Une application React pour la prévisualisation 3D interactive d’un caisson Dibond avec plis et perçages, basée sur [React Three Fiber](https://github.com/pmndrs/react-three-fiber).
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Fonctionnalités
 
-## Expanding the ESLint configuration
+- Visualisation 3D d’une face Dibond avec retours pliés sur la profondeur du pli.
+- Épaisseur réaliste fixée à 3 mm.
+- Perçages de 3 mm de diamètre aux coins et bords pour montage.
+- Contrôle de la caméra avec orbite (rotation, zoom, déplacement).
+- Affichage dynamique selon les dimensions et profondeur spécifiées.
+- Exportation des graphiques vectoriels au format **SVG** et **DXF**.
+- Interface utilisateur moderne et réactive grâce à **Tailwind CSS**.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Installation
+
+1. Cloner le dépôt :
+   ```bash
+   git clone https://github.com/ton-utilisateur/dibond-caisson-3d.git
+   cd dibond-caisson-3d
+   ```
+
+2. Installer les dépendances :
+   ```bash
+   npm install
+   ```
+
+3. Lancer l'application en mode développement :
+   ```bash
+   npm start
+   ```
+
+4. Ouvrir l'application dans votre navigateur à l'adresse suivante :
+   ```
+   http://localhost:3000
+   ```
+
+---
+
+## Structure du projet
+
+- **`src/components`** : Contient les composants React principaux, comme `VectorDrawer`, `ExportButtons` et `Previsualisation3D`.
+- **`src/utils`** : Contient les utilitaires pour l'exportation des fichiers SVG et DXF.
+- **`src/styles`** : Fichiers de style configurés avec **Tailwind CSS**.
+
+---
+
+## Contribution
+
+Les contributions sont les bienvenues ! Si vous souhaitez contribuer :
+
+1. Forkez le projet.
+2. Créez une branche pour votre fonctionnalité ou correction de bug :
+   ```bash
+   git checkout -b ma-fonctionnalite
+   ```
+3. Faites vos modifications et validez-les :
+   ```bash
+   git commit -m "Ajout de ma fonctionnalité"
+   ```
+4. Poussez vos modifications :
+   ```bash
+   git push origin ma-fonctionnalite
+   ```
+5. Ouvrez une Pull Request.
+
+---
+
+## Licence
+
+Ce projet est sous licence [MIT](LICENSE).
+
+---
+
+## Auteur
+
+Développé par **[Votre Nom ou Pseudo]**. N'hésitez pas à me contacter pour toute question ou suggestion !
+
