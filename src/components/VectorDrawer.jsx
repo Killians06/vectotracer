@@ -4,69 +4,43 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
   // Rayon des trous (3mm de diamètre)
   const holeRadius = 1.5;
 
-  // Pli gauche (vertical)
-  const pliGauchePoints = [
-    [0, depth + depth],
-    [depth, depth],
-    [depth, depth + height],
-    [0, depth + height - depth],
-  ]
-    .map((p) => p.join(','))
-    .join(',');
-
-  // Pli droit (vertical)
-  const pliDroitPoints = [
-    [depth + width, depth],
-    [depth + width + depth - depth, depth],
-    [depth + width + depth, depth + depth],
-    [depth + width + depth, depth + height - depth],
-    [depth + width + depth - depth, depth + height],
-    [depth + width, depth + height],
-  ]
-    .map((p) => p.join(','))
-    .join(',');
-
-  // Pli haut (horizontal)
-  const pliHautPoints = [
-    [0, 0],
-    [depth + depth, 0],
-    [depth + width - depth, 0],
-    [depth + width + depth, 0],
-    [depth + width, depth],
-    [depth, depth],
-  ]
-    .map((p) => p.join(','))
-    .join(',');
-
-  // Pli bas (horizontal)
-  const pliBasPoints = [
-    [depth, depth + height],
-    [depth + width, depth + height],
-    [depth + depth + width, depth + height + depth],
-    [depth + width - depth, depth + height + depth],
-    [depth + depth, depth + height + depth],
-    [0, depth + height + depth],
-  ]
-    .map((p) => p.join(','))
-    .join(',');
+  // Points pour le tracé externe unique
+  const externalPath = [
+    // Pli haut
+    `M 0,0`,
+    `L ${depth+width+depth},0`,
+    `L ${depth+width},${depth}`,
+    `L ${depth+width+depth},${depth*2}`,
+    `L ${depth+width+depth},${height}`,
+    `L ${depth+width},${height+depth}`,
+    `L ${depth*2+width},${depth*2+height}`,
+    `L 0,${depth*2+height}`,
+    `L ${depth},${depth+height}`,
+    `L 0,${height}`,
+    `L 0,${depth*2}`,
+    `L ${depth},${depth}`,
+    `L 0,0`,
+    // Retour au point de départ
+    `Z`,
+  ].join(' ');
 
   // Positions des trous
   const holes = [
     // Pli haut - coins extérieurs
-    { cx: depth*0.5, cy: depth*0.5 /2 },
-    { cx: depth + width + depth*0.5, cy: depth*0.5 /2 },
+    { cx: depth * 0.5, cy: depth * 0.5 / 2 },
+    { cx: depth + width + depth * 0.5, cy: depth * 0.5 / 2 },
 
     // Pli bas - coins extérieurs
-    { cx: depth*0.5, cy: depth * 2 + height - depth*0.5 /2},
-    { cx: depth + width + depth*0.5, cy: depth * 2 + height - depth*0.5 /2 },
+    { cx: depth * 0.5, cy: depth * 2 + height - depth * 0.5 / 2 },
+    { cx: depth + width + depth * 0.5, cy: depth * 2 + height - depth * 0.5 / 2 },
 
     // Pli gauche - trous alignés en haut et bas
-    { cx: depth*0.5 /2, cy: depth*2 + depth*0.5 /2},
-    { cx: depth*0.5 /2, cy: height - depth*0.5 /2 },
+    { cx: depth * 0.5 / 2, cy: depth * 2 + depth * 0.5 / 2 },
+    { cx: depth * 0.5 / 2, cy: height - depth * 0.5 / 2 },
 
     // Pli droit - trous alignés en haut et bas
-    { cx: depth * 2 + width - depth*0.5 /2, cy: depth*2 + depth*0.5 /2 },
-    { cx: depth * 2 + width - depth*0.5 /2, cy: height - depth*0.5 /2 },
+    { cx: depth * 2 + width - depth * 0.5 / 2, cy: depth * 2 + depth * 0.5 / 2 },
+    { cx: depth * 2 + width - depth * 0.5 / 2, cy: height - depth * 0.5 / 2 },
   ];
 
   // Calcul taille SVG totale (avec marges pour plis)
@@ -82,37 +56,8 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
       xmlns="http://www.w3.org/2000/svg"
       style={{ backgroundColor: '#f0f0f0' }}
     >
-      {/* Pli gauche */}
-      <polygon points={pliGauchePoints} fill="#90caf9" stroke="black" strokeWidth={1} />
-      {/* Ligne verticale pli gauche */}
-      <line
-        x1={depth}
-        y1={depth}
-        x2={depth}
-        y2={depth + height}
-        stroke="black"
-        strokeWidth={1}
-        strokeDasharray="4 2"
-      />
-
-      {/* Pli droit */}
-      <polygon points={pliDroitPoints} fill="#90caf9" stroke="black" strokeWidth={1} />
-      {/* Ligne verticale pli droit */}
-      <line
-        x1={depth + width}
-        y1={depth}
-        x2={depth + width}
-        y2={depth + height}
-        stroke="black"
-        strokeWidth={1}
-        strokeDasharray="4 2"
-      />
-
-      {/* Pli haut */}
-      <polygon points={pliHautPoints} fill="#90caf9" stroke="black" strokeWidth={1} />
-
-      {/* Pli bas */}
-      <polygon points={pliBasPoints} fill="#90caf9" stroke="black" strokeWidth={1} />
+      {/* Tracé externe unique */}
+      <path d={externalPath} fill="#90caf9" stroke="black" strokeWidth={1} />
 
       {/* Fond face centrale */}
       <rect
