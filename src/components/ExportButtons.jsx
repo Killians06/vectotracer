@@ -1,4 +1,4 @@
-import { exportSVG, exportDXF } from '../utils/exportUtils';
+import { exportSVG, exportDXF, exportPDF } from '../utils/exportUtils';
 
 export default function ExportButtons({ svgRef, dims }) {
   return (
@@ -14,6 +14,12 @@ export default function ExportButtons({ svgRef, dims }) {
         onClick={() => exportDXF(dims.width, dims.height, dims.depth)}
       >
         Exporter en DXF
+      </button>
+      <button
+        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+        onClick={() => exportPDF(svgRef.current)}
+      >
+        Exporter en PDF
       </button>
     </div>
   );

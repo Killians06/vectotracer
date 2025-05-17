@@ -46,16 +46,18 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
   // Calcul taille SVG totale (avec marges pour plis)
   const svgWidth = width + 2 * depth + 40;
   const svgHeight = height + 2 * depth + 40;
+  
+  const mmToPx = mm => mm * (96 / 25.4);
 
   return (
     <svg
-      ref={svgRef}
-      width="100%"
-      height="400"
-      viewBox={`-20 -20 ${svgWidth} ${svgHeight}`}
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ backgroundColor: '#f0f0f0' }}
-    >
+  ref={svgRef}
+  width={`300px`}
+  height={`200px`}
+  viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+  xmlns="http://www.w3.org/2000/svg"
+  style={{ backgroundColor: '#f0f0f0' }}
+>
       {/* Tracé externe unique */}
       <path d={externalPath} fill="#90caf9" stroke="black" strokeWidth={1} />
 
