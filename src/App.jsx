@@ -5,7 +5,7 @@ import Formulaire from './components/FormulaireDimensions';
 import Previsualisation3D from './components/Previsualisation3D';
 
 function App() {
-  const [dims, setDims] = useState({ width: 400, height: 300, depth: 30 });
+  const [dims, setDims] = useState({ width: 400, height: 300, depth: 40 });
   const svgRef = useRef(null);
 
   const updateDims = (key, value) => {

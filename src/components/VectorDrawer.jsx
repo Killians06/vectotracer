@@ -53,20 +53,20 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
   // Positions des trous
   const holes = [
     // Pli haut - coins extérieurs
-    { cx: depth*0.5, cy: 10 },
-    { cx: depth + width + depth*0.5, cy: 10 },
+    { cx: depth*0.5, cy: depth*0.5 /2 },
+    { cx: depth + width + depth*0.5, cy: depth*0.5 /2 },
 
     // Pli bas - coins extérieurs
-    { cx: depth*0.5, cy: depth * 2 + height -10},
-    { cx: depth + width + depth*0.5, cy: depth * 2 + height -10 },
+    { cx: depth*0.5, cy: depth * 2 + height - depth*0.5 /2},
+    { cx: depth + width + depth*0.5, cy: depth * 2 + height - depth*0.5 /2 },
 
     // Pli gauche - trous alignés en haut et bas
-    { cx: 10, cy: depth*2 + 10},
-    { cx: 10, cy: height - 10 },
+    { cx: depth*0.5 /2, cy: depth*2 + depth*0.5 /2},
+    { cx: depth*0.5 /2, cy: height - depth*0.5 /2 },
 
     // Pli droit - trous alignés en haut et bas
-    { cx: depth * 2 + width - 10, cy: depth*2 + 10 },
-    { cx: depth * 2 + width - 10, cy: height - 10 },
+    { cx: depth * 2 + width - depth*0.5 /2, cy: depth*2 + depth*0.5 /2 },
+    { cx: depth * 2 + width - depth*0.5 /2, cy: height - depth*0.5 /2 },
   ];
 
   // Calcul taille SVG totale (avec marges pour plis)
