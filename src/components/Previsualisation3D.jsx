@@ -243,21 +243,21 @@ function CaissonSimplifie({ width, height, depth }) {
   );
 }
 
-export default function Previsualisation3DSimplifiee({ width = 100, height = 50, depth = 3 }) {
+export default function Previsualisation3DSimplifiee({ width = 400, height = 600, depth = 4 }) {
   return (
     <Canvas
       camera={{
-        position: [width * 1.5, height * 1.5, Math.max(width, height) * 2],
+        position: [width * 1.5, height * 1.5, Math.max(width, height) * 3],
         fov: 50,
         near: 0.1,
         far: 5000,
       }}
-      style={{ height: 400 }}
+      style={{ height: "100%" }}
     >
       <ambientLight intensity={0.8} />
       <directionalLight position={[10, 10, 10]} intensity={1} />
       <CaissonSimplifie width={width} height={height} depth={depth} />
-      <OrbitControls minDistance={10} maxDistance={1000} />
+      <OrbitControls minDistance={1} maxDistance={5000} />
     </Canvas>
   );
 }

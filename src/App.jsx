@@ -6,7 +6,7 @@ import Previsualisation3D from './components/Previsualisation3D';
 
 function App() {
   const [dims, setDims] = useState({ width: 400, height: 300, depth: 40 });
-  const [paths, setPaths] = useState([]); // <-- nouvel état pour les paths
+  const [paths, setPaths] = useState([]);
   const svgRef = useRef(null);
 
   const updateDims = (key, value) => {
@@ -14,23 +14,45 @@ function App() {
   };
 
   return (
-    <div className="p-4 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <h1 className="text-2xl font-bold mb-4">Générateur de tracé Dibond</h1>
+    <div className="app-container">
+      {/* Panneau de gauche - Vue 2D et formulaire */}
+      <div className="left-panel">
+        <div className="panel-content">
+          <div className="card form-card">
+            <h1 className="text-2xl font-bold mb-4">Générateur de tracé Dibond</h1>
+            <div>
+              <h2 className="text-xl font-bold mb-4">Dimensions</h2>
+              <Formulaire dims={dims} onChange={updateDims} />
+            </div>
+          </div>
 
-        <Formulaire dims={dims} onChange={updateDims} />
+          <div className="scroll-container">
+            <div className="card drawing-card">
+              <h2 className="text-xl font-bold mb-4">Zone de dessin</h2>
+              <div className="drawing-area">
+                <VectorDrawer {...dims} svgRef={svgRef} onPathsReady={setPaths} />
+              </div>
+            </div>
+          </div>
 
-        <div className="border mt-4 p-4 bg-white rounded shadow">
-          <VectorDrawer {...dims} svgRef={svgRef} onPathsReady={setPaths} />
+          <div className="card">
+            <h2 className="text-xl font-bold mb-4">Options d'export</h2>
+            <ExportButtons svgRef={svgRef} dims={dims} paths={paths} />
+          </div>
         </div>
-
-        <ExportButtons svgRef={svgRef} dims={dims} paths={paths} />
       </div>
 
-      <div className="border p-4 bg-white rounded shadow">
-        <h2 className="text-xl font-semibold mb-2">Prévisualisation 3D</h2>
-        <div style={{ width: '100%', height: 400 }}>
-          <Previsualisation3D width={dims.width} height={dims.height} depth={dims.depth} />
+      {/* Panneau de droite - Vue 3D */}
+      <div className="right-panel">
+        <div className="panel-content">
+          <h2 className="text-xl font-bold mb-4">Prévisualisation 3D</h2>
+          <div className="preview-3d">
+            <Previsualisation3D 
+              width={dims.width} 
+              height={dims.height} 
+              depth={dims.depth} 
+            />
+          </div>
         </div>
       </div>
     </div>

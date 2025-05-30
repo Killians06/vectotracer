@@ -1,17 +1,23 @@
 import { useState } from 'react';
-import { exportSVG, exportDXF, exportViaBackend } from '../utils/exportUtils';
+import { exportViaBackend } from '../utils/exportUtils';
 
-export default function ExportButtons({ svgRef, dims }) {
-
+const ExportButtons = ({ svgRef, dims, paths }) => {
+  const [isExporting, setIsExporting] = useState(false);
   const [filename, setFilename] = useState('');
 
-  const handleExportPDF = async () => {
-    if (!svgRef.current) {
-      console.error('svgRef non défini');
+  const handleExport = async () => {
+    if (!filename.trim()) {
+      alert('Veuillez entrer un nom de fichier');
       return;
     }
 
+    setIsExporting(true);
     try {
+      if (!svgRef.current) {
+        console.error('svgRef non défini');
+        return;
+      }
+
       const svgElement = svgRef.current;
       const totalWidth =
         parseFloat(svgElement.getAttribute('width')) ||
@@ -28,7 +34,7 @@ export default function ExportButtons({ svgRef, dims }) {
       const lineElements = Array.from(svgElement.querySelectorAll('line'));
       const circleElements = Array.from(svgElement.querySelectorAll('circle'));
 
-      // Création d’un tableau homogène avec tous les éléments
+      // Création d'un tableau homogène avec tous les éléments
       const paths = pathElements.map(path => ({
         type: 'path',
         d: path.getAttribute('d'),
@@ -70,37 +76,30 @@ export default function ExportButtons({ svgRef, dims }) {
       await exportViaBackend(totalWidth, totalHeight, allElements, filename);
       console.log('Export PDF réussi');
     } catch (error) {
-      console.error('Erreur lors de l’export PDF:', error);
+      console.error('Erreur lors de l\'export:', error);
+    } finally {
+      setIsExporting(false);
     }
   };
 
   return (
-    <div className="mt-4 flex gap-2">
+    <div className="flex items-center gap-4">
       <input
         type="text"
         value={filename}
-        onChange={e => setFilename(e.target.value)}
-        placeholder="Nom du fichier PDF"
-        className="border rounded px-2 py-1 w-64"
+        onChange={(e) => setFilename(e.target.value)}
+        placeholder="Nom du fichier"
+        className="input filename-input"
       />
       <button
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-        onClick={() => exportSVG(svgRef.current)}
+        onClick={handleExport}
+        disabled={isExporting}
+        className="btn btn-primary whitespace-nowrap"
       >
-        Exporter en SVG
-      </button>
-      <button
-        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-        onClick={() => exportDXF(dims.width, dims.height, dims.depth)}
-      >
-        Exporter en DXF
-      </button>
-      <button
-        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
-        onClick={handleExportPDF}
-      >
-        Télécharger PDF Spot Color Router
+        {isExporting ? 'Export en cours...' : 'Exporter en PDF'}
       </button>
     </div>
   );
-}
+};
+
+export default ExportButtons;

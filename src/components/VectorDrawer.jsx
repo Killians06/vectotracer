@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function VectorDrawer({ width, height, depth, svgRef }) {
-  // Rayon des trous (3mm de diamètre)
+  const containerRef = useRef(null);
   const holeRadius = 1.5;
 
   // Points pour le tracé externe unique
@@ -27,7 +27,7 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
   const paths = [
     {
       d: externalPath,
-      spotcolor: true, // ou false selon le besoin
+      spotcolor: true,
     },
   ];
 
@@ -53,91 +53,112 @@ export default function VectorDrawer({ width, height, depth, svgRef }) {
   // Calcul taille SVG totale (avec marges pour plis)
   const svgWidth = width + 2 * depth;
   const svgHeight = height + 2 * depth;
-  const spotcolor = true; // ou false
+
+  useEffect(() => {
+    if (containerRef.current && svgRef.current) {
+      const container = containerRef.current;
+      const svg = svgRef.current;
+
+      // Ajout d'une marge de 5% autour du dessin
+      const margin = 0.05;
+      const viewBoxWidth = svgWidth * (1 + 2 * margin);
+      const viewBoxHeight = svgHeight * (1 + 2 * margin);
+      const offsetX = -svgWidth * margin;
+      const offsetY = -svgHeight * margin;
+
+      svg.setAttribute('viewBox', `${offsetX} ${offsetY} ${viewBoxWidth} ${viewBoxHeight}`);
+    }
+  }, [width, height, depth, svgWidth, svgHeight]);
 
   return (
-    <svg
-      ref={svgRef}
-      width={svgWidth}
-      height={svgHeight}
-      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ backgroundColor: '#f0f0f0' }}
-    >
-      {/* Tracé externe unique */}
-      {paths.map((path, index) => (
-        <path
-          key={index}
-          d={path.d}
-          fill="#90caf9"
-          stroke={path.spotcolor ? 'red' : 'black'} // Juste pour affichage à l'écran
-          data-spotcolor={path.spotcolor ? 'true' : 'false'} // <-- Ici l'attribut data-spotcolor
+    <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <svg
+        ref={svgRef}
+        width={svgWidth}
+        height={svgHeight}
+        style={{ 
+          maxWidth: '100%',
+          maxHeight: '100%',
+          objectFit: 'contain'
+        }}
+        preserveAspectRatio="xMidYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Tracé externe unique */}
+        {paths.map((path, index) => (
+          <path
+            key={index}
+            d={path.d}
+            fill="#90caf9"
+            stroke={path.spotcolor ? 'red' : 'black'}
+            data-spotcolor={path.spotcolor ? 'true' : 'false'}
+          />
+        ))}
+
+        {/* Fond face centrale */}
+        <rect
+          x={depth}
+          y={depth}
+          width={width}
+          height={height}
+          fill="#cce5ff"
+          stroke={true ? 'red' : 'black'}
+          strokeWidth={1}
+          data-spotcolor="true"
         />
-      ))}
 
-      {/* Fond face centrale */}
-    <rect
-      x={depth}
-      y={depth}
-      width={width}
-      height={height}
-      fill="#cce5ff"
-      stroke={spotcolor ? 'red' : 'black'}
-      strokeWidth={1}
-      data-spotcolor={spotcolor ? 'true' : 'false'}
-    />
+        {/* Face centrale décomposée en 4 lignes */}
+        <line
+          x1={depth}
+          y1={depth}
+          x2={depth + width}
+          y2={depth}
+          stroke={true ? 'red' : 'black'}
+          strokeWidth={1}
+          data-spotcolor="true"
+        />
+        <line
+          x1={depth}
+          y1={depth + height}
+          x2={depth + width}
+          y2={depth + height}
+          stroke={true ? 'red' : 'black'}
+          strokeWidth={1}
+          data-spotcolor="true"
+        />
+        <line
+          x1={depth}
+          y1={depth * 0}
+          x2={depth}
+          y2={depth * 2 + height}
+          stroke={true ? 'red' : 'black'}
+          strokeWidth={1}
+          data-spotcolor="true"
+        />
+        <line
+          x1={depth + width}
+          y1={depth * 0}
+          x2={depth + width}
+          y2={depth * 2 + height}
+          stroke={true ? 'red' : 'black'}
+          strokeWidth={1}
+          data-spotcolor="true"
+        />
 
-    {/* Face centrale décomposée en 4 lignes */}
-    <line
-      x1={depth}
-      y1={depth}
-      x2={depth + width}
-      y2={depth}
-      stroke={spotcolor ? 'red' : 'black'}
-      strokeWidth={1}
-      data-spotcolor={spotcolor ? 'true' : 'false'}
-    />
-    <line
-      x1={depth}
-      y1={depth + height}
-      x2={depth + width}
-      y2={depth + height}
-      stroke={spotcolor ? 'red' : 'black'}
-      strokeWidth={1}
-      data-spotcolor={spotcolor ? 'true' : 'false'}
-    />
-    <line
-      x1={depth}
-      y1={depth * 0}
-      x2={depth}
-      y2={depth * 2 + height}
-      stroke={spotcolor ? 'red' : 'black'}
-      strokeWidth={1}
-      data-spotcolor={spotcolor ? 'true' : 'false'}
-    />
-    <line
-      x1={depth + width}
-      y1={depth * 0}
-      x2={depth + width}
-      y2={depth * 2 + height}
-      stroke={spotcolor ? 'red' : 'black'}
-      strokeWidth={1}
-      data-spotcolor={spotcolor ? 'true' : 'false'}
-    />
-
-    {/* Perçages */}
-    {holes.map(({ cx, cy }, i) => (
-      <circle
-        key={i}
-        cx={cx}
-        cy={cy}
-        r={holeRadius}
-        fill="none"
-        stroke={spotcolor ? 'red' : 'black'}
-        strokeWidth={1}
-        data-spotcolor={spotcolor ? 'true' : 'false'}
-      />
-    ))}
-  </svg>
+        {/* Perçages */}
+        {holes.map(({ cx, cy }, i) => (
+          <circle
+            key={i}
+            cx={cx}
+            cy={cy}
+            r={holeRadius}
+            fill="none"
+            stroke={true ? 'red' : 'black'}
+            strokeWidth={1}
+            data-spotcolor="true"
+          />
+        ))}
+      </svg>
+    </div>
   );
 }
